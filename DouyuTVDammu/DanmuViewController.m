@@ -107,6 +107,7 @@
 }
 
 - (void)viewDidDisappear:(BOOL)animated{
+    [super viewDidDisappear:animated];
     //断开链接
     [_authSocket cutOffSocket];
     [_danmuSocket cutOffSocket];

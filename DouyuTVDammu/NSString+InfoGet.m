@@ -93,7 +93,7 @@ static inline char itoh(int i) {
     
 
    
-    NSString *hexString = [NSString new];
+    NSString *hexString;
     //判断包中内容是否含有弹幕组的信息
     NSRange range = [upperString rangeOfString:@"74797065403D7365746D736767726F7570"];
 

@@ -30,6 +30,7 @@
     
 }
 - (void)viewWillAppear:(BOOL)animated{
+    [super viewWillAppear:animated];
     [self requestData];
     [self.favroiteTableView reloadData];
 }

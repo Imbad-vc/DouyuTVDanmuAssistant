@@ -53,7 +53,6 @@
                 }else{
                     msg = temp;
                 }
-                msg = [NSString stringWithFormat:@"%@给主播赠送了%@ x%@",nickname,giftName,hits];
                 abText = [[NSMutableAttributedString alloc]initWithString:msg];
                 [abText addAttribute:NSForegroundColorAttributeName value:[UIColor redColor] range:NSMakeRange(0,nickname.length)];
                 [abText addAttribute:NSForegroundColorAttributeName value:[UIColor redColor] range:NSMakeRange(nickname.length+6, msg.length-nickname.length-6)];
