@@ -13,7 +13,7 @@ a DouyuTV Danmu Assistant in iOS version
 #Special Thanks
   [theCabin_An Xie](http://430.io/) for the room detail API
   
-  [fishioon](https://github.com/fishioon) and [twicucao](https://github.com/twocucao) for some details
+  [fishioon](https://github.com/fishioon) and [twocucao](https://github.com/twocucao) for some details
 
 
 
