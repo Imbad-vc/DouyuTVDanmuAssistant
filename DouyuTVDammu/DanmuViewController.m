@@ -203,6 +203,7 @@
                 NSDictionary *room = newArry[i];
                 if ([self.roomID isEqualToString:room[@"roomID"]]) {
                     [newArry removeObjectAtIndex:i];
+                    break;
                 }
             }
             self.navigationItem.rightBarButtonItem.title = @"☆";
