@@ -19,8 +19,10 @@
         DanmuModel *model = [DanmuModel new];
         if ([string rangeOfString:@"type@=dgb/gfid"].location != NSNotFound){
             model.cellType = CellNewGiftType;
+            model.gift = self.giftInfo;
         }else if ([string rangeOfString:@"type@=dgn/gfid"].location != NSNotFound){
             model.cellType = CellGiftType;
+            model.gift = self.giftInfo;
         }else if ([string rangeOfString:@"type@=bc_buy_deserve"].location != NSNotFound){
             model.cellType = CellDeserveType;
         }else{
@@ -28,7 +30,7 @@
             model = nil;
             return;
         }
-        model.gift = self.giftInfo;
+        
         [model setModelFromStirng:string];
         //将model对象加入到信息model数组里面
         [self.data addObject:model];

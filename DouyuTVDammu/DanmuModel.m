@@ -32,7 +32,7 @@
         case CellNewGiftType:
             {
                 NSString *gifPattern = @"(?<=gfid@=).*(?=\/gs)";
-                NSString *namePattern = @"(?<=nn@=).*(?=\/rid)";
+                NSString *namePattern = @"(?<=nn@=).*(?=\/ic)";
                 NSString *hitPattern = @"(?<=hits@=).*(?=\/)";
                 NSString *gift = [string regexString:gifPattern];
                 NSString *nickname = [string regexString:namePattern];

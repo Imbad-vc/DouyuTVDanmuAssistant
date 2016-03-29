@@ -61,12 +61,10 @@
         DanmuModel *model = [DanmuModel new];
         if ([string rangeOfString:@"type@=chatmsg"].location != NSNotFound) {
             model.cellType = CellNewChatMessageType;
-            [model setModelFromStirng:string];
             
         }else if ([string rangeOfString:@"type@=dgb/gfid"].location != NSNotFound){
             model.cellType = CellNewGiftType;
             model.gift = self.giftInfo;
-            [model setModelFromStirng:string];
             
         }else if ([string rangeOfString:@"type@=uenter"].location != NSNotFound){
             model.cellType = CellNewUserEnterType;
