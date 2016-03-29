@@ -34,8 +34,13 @@
                 NSString *gifPattern = @"(?<=gfid@=).*(?=\/gs)";
                 NSString *namePattern = @"(?<=nn@=).*(?=\/ic)";
                 NSString *hitPattern = @"(?<=hits@=).*(?=\/)";
+                NSString *nickname;
+                if ([string regexString:namePattern].length == 0) {
+                    nickname = [string regexString:@"(?<=nn@=).*(?=\/ic)"];
+                }else{
+                    nickname = [string regexString:namePattern];
+                }
                 NSString *gift = [string regexString:gifPattern];
-                NSString *nickname = [string regexString:namePattern];
                 NSString *hits = [string regexString:hitPattern];
                 if (hits == NULL) {
                     hits = @"1";
