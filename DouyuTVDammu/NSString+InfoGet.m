@@ -103,6 +103,9 @@ static inline char itoh(int i) {
         hexString = [unSubstring substringToIndex:grpIDRange.location];
         
     }else{
+        if (upperString.length < 24){
+            return nil;
+        }
         NSString *subString = [upperString substringFromIndex:24];
         hexString = [subString substringToIndex:subString.length-2];
     }

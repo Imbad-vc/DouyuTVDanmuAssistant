@@ -135,7 +135,7 @@
         case CellDeserveType:
         {
             NSString *nickPattern = @"(?<=Snick@A=).*(?=@Sicon)";
-            NSString *levPattern = @"(?<=lev@=).*(?\/rid)";
+            NSString *levPattern = @"(?<=lev@=).*(?=\/rid)";
             NSString *hitPattern = @"(?<=hits@=).*(?=\/sid)";
             NSInteger levle = [[string regexString:levPattern] integerValue];
             NSString *nickname = [string regexString:nickPattern];
