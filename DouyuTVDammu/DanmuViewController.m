@@ -26,6 +26,8 @@
     CGFloat screenWidth = CGRectGetWidth(self.view.frame);
     CGFloat screenHeight = CGRectGetHeight(self.view.frame);
     CGFloat topLayOut = CGRectGetHeight([[UIApplication sharedApplication] statusBarFrame])+CGRectGetHeight(self.navigationController.navigationBar.frame);
+    //保持屏幕常亮
+    [UIApplication sharedApplication].idleTimerDisabled = YES;
     //添加收藏按钮★☆hi
     self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc]initWithTitle:@"☆" style:UIBarButtonItemStylePlain target:self action:@selector(favroiteButtonAciton)];
     if ([self isFavroiteRoom]) {
@@ -108,6 +110,8 @@
 
 - (void)viewDidDisappear:(BOOL)animated{
     [super viewDidDisappear:animated];
+    //关闭常亮
+    [UIApplication sharedApplication].idleTimerDisabled = NO;
     //断开链接
     [_authSocket cutOffSocket];
     [_danmuSocket cutOffSocket];
