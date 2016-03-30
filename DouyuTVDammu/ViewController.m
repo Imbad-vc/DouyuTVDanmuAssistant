@@ -84,7 +84,7 @@
             [warning show];
         }
     }
-    
+    self.maskView.hidden = YES;
     return YES;
 }
 

@@ -128,6 +128,7 @@
         }
         
     }
+    self.maskView.hidden = YES;
     [searchBar resignFirstResponder];
     [self.searchView.searchTableView reloadData];
     
