@@ -368,7 +368,7 @@
 				TargetAttributes = {
 					16E6D9C11C80819A005B17EF = {
 						CreatedOnToolsVersion = 7.2.1;
-						DevelopmentTeam = D7GEABXRGX;
+						DevelopmentTeam = 88VZD6R734;
 					};
 					16E6D9DA1C80819A005B17EF = {
 						CreatedOnToolsVersion = 7.2.1;
@@ -645,6 +645,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.imbad.DouyuTVDammuAssistant;
 				PRODUCT_NAME = DouyuTVDammuAssistant;
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Debug;
 		};
@@ -654,10 +655,12 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Distribution";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
 				INFOPLIST_FILE = DouyuTVDammu/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.imbad.DouyuTVDammuAssistant;
 				PRODUCT_NAME = DouyuTVDammuAssistant;
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Release;
 		};

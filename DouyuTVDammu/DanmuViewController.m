@@ -152,7 +152,20 @@
 - (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView {
     CGFloat pageWidth = scrollView.frame.size.width;
     NSInteger page = scrollView.contentOffset.x / pageWidth;
-    
+    switch (page) {
+        case 0:
+            self.giftTableView.isNotInView = YES;
+            self.danmuTableView.isNotInView = NO;
+            break;
+        case 1:
+            self.giftTableView.isNotInView = NO;
+            self.danmuTableView.isNotInView = YES;
+            break;
+        default:
+            self.giftTableView.isNotInView = YES;
+            self.danmuTableView.isNotInView = YES;
+            break;
+    }
     [self.sgmControl setSelectedSegmentIndex:page animated:YES];
 }
 

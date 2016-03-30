@@ -34,11 +34,14 @@
         [model setModelFromStirng:string];
         //将model对象加入到信息model数组里面
         [self.data addObject:model];
-        //刷新数据，更新界面
-        [self reloadData];
-        //将最后一个单元格滚动到表视图的底部显示
-        NSIndexPath *indexPath = [NSIndexPath indexPathForRow:self.data.count-1 inSection:0];
-        [self scrollToRowAtIndexPath:indexPath atScrollPosition:UITableViewScrollPositionBottom animated:YES];
+        if (self.isNotInView == NO) {
+            //刷新数据，更新界面
+            [self reloadData];
+            //将最后一个单元格滚动到表视图的底部显示
+            NSIndexPath *indexPath = [NSIndexPath indexPathForRow:self.data.count-1 inSection:0];
+            [self scrollToRowAtIndexPath:indexPath atScrollPosition:UITableViewScrollPositionBottom animated:YES];
+            
+        }
     }
     
 }

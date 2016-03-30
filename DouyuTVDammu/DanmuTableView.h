@@ -14,4 +14,5 @@
 
 @property (nonatomic,strong)NSMutableArray *data;
 @property (nonatomic,strong)NSArray *giftInfo;
+@property (nonatomic,assign)BOOL isNotInView;
 @end
