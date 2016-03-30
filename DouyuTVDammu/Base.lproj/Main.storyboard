@@ -37,6 +37,7 @@
                             <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="请输入房间号..." textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="deG-nO-hH4">
                                 <rect key="frame" x="200" y="98" width="200" height="30"/>
                                 <constraints>
+                                    <constraint firstAttribute="height" constant="30" id="gG3-be-bfg"/>
                                     <constraint firstAttribute="width" constant="200" id="h0v-29-jqT"/>
                                 </constraints>
                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
@@ -49,7 +50,7 @@
                                 <rect key="frame" x="200" y="171" width="200" height="300"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <constraints>
-                                    <constraint firstAttribute="height" constant="300" id="c14-IA-9eF"/>
+                                    <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="100" id="QBW-37-1lI"/>
                                     <constraint firstAttribute="width" constant="200" id="kVd-Tq-kQY"/>
                                 </constraints>
                                 <color key="sectionIndexBackgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
@@ -60,18 +61,27 @@
                             </tableView>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="★" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="XqH-r8-FEj">
                                 <rect key="frame" x="288" y="136" width="25" height="30"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="30" id="NUg-oV-qIc"/>
+                                </constraints>
                                 <fontDescription key="fontDescription" type="system" pointSize="25"/>
                                 <color key="textColor" red="1" green="1" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                 <nil key="highlightedColor"/>
                             </label>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="微博：飞吧飞吧飞吧言诚君" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="FFG-4M-NMg">
                                 <rect key="frame" x="198" y="491" width="204" height="21"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="21" id="AQZ-LX-ybE"/>
+                                </constraints>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <color key="textColor" red="0.90196079015731812" green="0.90196079015731812" blue="0.90196079015731812" alpha="1" colorSpace="calibratedRGB"/>
                                 <nil key="highlightedColor"/>
                             </label>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="E-mail：imbad-vc@hotmail.com" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="cyP-eX-IWk">
                                 <rect key="frame" x="177" y="522" width="247" height="21"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="21" id="YaQ-Lj-nhb"/>
+                                </constraints>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <color key="textColor" red="0.90196079015731812" green="0.90196079015731812" blue="0.90196079015731812" alpha="1" colorSpace="calibratedRGB"/>
                                 <nil key="highlightedColor"/>
@@ -79,6 +89,7 @@
                         </subviews>
                         <color key="backgroundColor" red="1" green="0.50196081400000003" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                         <constraints>
+                            <constraint firstItem="Jc3-RA-RQ3" firstAttribute="top" secondItem="cyP-eX-IWk" secondAttribute="bottom" constant="57" id="2NW-f6-lhP"/>
                             <constraint firstItem="XqH-r8-FEj" firstAttribute="centerX" secondItem="kjP-aw-21g" secondAttribute="centerX" id="6MR-Zp-eX7"/>
                             <constraint firstItem="FFG-4M-NMg" firstAttribute="centerX" secondItem="kjP-aw-21g" secondAttribute="centerX" id="PrM-bV-zFw"/>
                             <constraint firstItem="8mB-GQ-b9m" firstAttribute="leading" secondItem="deG-nO-hH4" secondAttribute="leading" id="VZr-kH-QHc"/>

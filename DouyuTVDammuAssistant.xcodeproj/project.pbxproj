@@ -643,7 +643,7 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				INFOPLIST_FILE = DouyuTVDammu/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = com.DouyuTVDammuAssistant;
+				PRODUCT_BUNDLE_IDENTIFIER = com.imbad.DouyuTVDammuAssistant;
 				PRODUCT_NAME = DouyuTVDammuAssistant;
 			};
 			name = Debug;
@@ -653,10 +653,10 @@
 			baseConfigurationReference = 9194F94CAD65F2E5A3419EDF /* Pods.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_IDENTITY = "iPhone Distribution";
 				INFOPLIST_FILE = DouyuTVDammu/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = com.DouyuTVDammuAssistant;
+				PRODUCT_BUNDLE_IDENTIFIER = com.imbad.DouyuTVDammuAssistant;
 				PRODUCT_NAME = DouyuTVDammuAssistant;
 			};
 			name = Release;
