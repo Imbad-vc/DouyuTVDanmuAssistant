@@ -15,6 +15,7 @@
     self = [super initWithFrame:frame];
     if (self) {
         self.data = @[].mutableCopy;
+        self.dataCache = @[].mutableCopy;
         //绑定代理
         self.delegate = self;
         self.dataSource = self;
@@ -87,9 +88,16 @@
             return;
         }
         [model setModelFromStirng:string];
+        
+        if (self.data.count > 500) {
+            [self.dataCache addObjectsFromArray:self.data];
+            [self.data removeAllObjects];
+        }
+        
         //将model对象加入到信息model数组里面
         [self.data addObject:model];
         
+        //是否在当前页面，是就重载并滑动到最后
         if (self.isNotInView == NO) {
             //刷新数据，更新界面
             [self reloadData];

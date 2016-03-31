@@ -75,8 +75,10 @@
     //先读缓存的礼物信息
     NSString *filePath = [[NSBundle mainBundle] pathForResource:@"gift.plist" ofType:nil];
     NSArray *giftInfo = [NSArray arrayWithContentsOfFile:filePath];
-    self.danmuTableView.giftInfo = giftInfo;
-    self.giftTableView.giftInfo = giftInfo;
+    if (giftInfo.count != 0) {
+        self.danmuTableView.giftInfo = giftInfo;
+        self.giftTableView.giftInfo = giftInfo;
+    }
     
     [scrollView addSubview:self.danmuTableView];
     [scrollView addSubview:self.giftTableView];
@@ -125,16 +127,40 @@
     }else{
         [self.searchView.data removeAllObjects];
     }
-    for (DanmuModel *model in self.danmuTableView.data) {
-        NSInteger searchText = [model.unColoredMsg rangeOfString:searchBar.text].location;
-        if (searchText != NSNotFound) {
-            [self.searchView.data addObject:model];
+    
+    dispatch_queue_t search = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
+    dispatch_sync(search, ^{
+        if (self.danmuTableView.dataCache.count != 0) {
+            for (DanmuModel *model in self.danmuTableView.data) {
+                NSInteger searchText = [model.unColoredMsg rangeOfString:searchBar.text].location;
+                if (searchText != NSNotFound) {
+                    [self.searchView.data addObject:model];
+                }
+                
+            }
+            for (DanmuModel *model in self.danmuTableView.dataCache) {
+                NSInteger searchText = [model.unColoredMsg rangeOfString:searchBar.text].location;
+                if (searchText != NSNotFound) {
+                    [self.searchView.data addObject:model];
+                }
+                
+            }
+        }else{
+            for (DanmuModel *model in self.danmuTableView.data) {
+                NSInteger searchText = [model.unColoredMsg rangeOfString:searchBar.text].location;
+                if (searchText != NSNotFound) {
+                    [self.searchView.data addObject:model];
+                }
+                
+            }
+            
         }
+        [self.searchView.searchTableView reloadData];
         
-    }
+    });
+    
     self.maskView.hidden = YES;
     [searchBar resignFirstResponder];
-    [self.searchView.searchTableView reloadData];
     
 }
 
@@ -156,10 +182,12 @@
         case 0:
             self.giftTableView.isNotInView = YES;
             self.danmuTableView.isNotInView = NO;
+            [self.danmuTableView reloadData];
             break;
         case 1:
             self.giftTableView.isNotInView = NO;
             self.danmuTableView.isNotInView = YES;
+            [self.giftTableView reloadData];
             break;
         default:
             self.giftTableView.isNotInView = YES;

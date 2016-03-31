@@ -13,6 +13,7 @@
 @interface DanmuTableView : UITableView <UITableViewDataSource,UITableViewDelegate>
 
 @property (nonatomic,strong)NSMutableArray *data;
+@property (nonatomic,strong)NSMutableArray *dataCache;
 @property (nonatomic,strong)NSArray *giftInfo;
 @property (nonatomic,assign)BOOL isNotInView;
 @end

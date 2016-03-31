@@ -32,6 +32,12 @@
         }
         
         [model setModelFromStirng:string];
+        
+        if (self.data.count > 500) {
+            [self.dataCache addObjectsFromArray:self.data];
+            [self.data removeAllObjects];
+        }
+        
         //将model对象加入到信息model数组里面
         [self.data addObject:model];
         if (self.isNotInView == NO) {
