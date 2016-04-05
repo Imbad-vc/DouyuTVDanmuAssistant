@@ -17,10 +17,10 @@
     //判断消息类型
     if ([string rangeOfString:@"type@=mrkl/"].location == NSNotFound) {
         DanmuModel *model = [DanmuModel new];
-        if ([string rangeOfString:@"type@=dgb/gfid"].location != NSNotFound){
+        if ([string rangeOfString:@"type@=dgb"].location != NSNotFound){
             model.cellType = CellNewGiftType;
             model.gift = self.giftInfo;
-        }else if ([string rangeOfString:@"type@=dgn/gfid"].location != NSNotFound){
+        }else if ([string rangeOfString:@"type@=dgn"].location != NSNotFound){
             model.cellType = CellGiftType;
             model.gift = self.giftInfo;
         }else if ([string rangeOfString:@"type@=bc_buy_deserve"].location != NSNotFound){
@@ -40,9 +40,9 @@
         
         //将model对象加入到信息model数组里面
         [self.data addObject:model];
-        if (self.isNotInView == NO) {
-            //刷新数据，更新界面
-            [self reloadData];
+        //刷新数据，更新界面
+        [self reloadData];
+        if (self.isNeedScroll == YES) {
             //将最后一个单元格滚动到表视图的底部显示
             NSIndexPath *indexPath = [NSIndexPath indexPathForRow:self.data.count-1 inSection:0];
             [self scrollToRowAtIndexPath:indexPath atScrollPosition:UITableViewScrollPositionBottom animated:YES];

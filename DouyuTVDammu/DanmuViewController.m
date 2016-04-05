@@ -180,18 +180,18 @@
     NSInteger page = scrollView.contentOffset.x / pageWidth;
     switch (page) {
         case 0:
-            self.giftTableView.isNotInView = YES;
-            self.danmuTableView.isNotInView = NO;
+            self.giftTableView.isNeedScroll = NO;
+            self.danmuTableView.isNeedScroll = YES;
             [self.danmuTableView reloadData];
             break;
         case 1:
-            self.giftTableView.isNotInView = NO;
-            self.danmuTableView.isNotInView = YES;
+            self.giftTableView.isNeedScroll = YES;
+            self.danmuTableView.isNeedScroll = NO;
             [self.giftTableView reloadData];
             break;
         default:
-            self.giftTableView.isNotInView = YES;
-            self.danmuTableView.isNotInView = YES;
+            self.giftTableView.isNeedScroll = NO;
+            self.danmuTableView.isNeedScroll = NO;
             break;
     }
     [self.sgmControl setSelectedSegmentIndex:page animated:YES];

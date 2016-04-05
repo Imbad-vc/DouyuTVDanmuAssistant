@@ -23,6 +23,7 @@
         self.separatorStyle = UITableViewCellSeparatorStyleNone;
         //注册Cell
         [self registerClass:[DanmuCell class] forCellReuseIdentifier:@"danmuCell"];
+        self.isNeedScroll = YES;
         //监听通知
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(receiveNotification:) name:@"kReceiveMessageNotification" object:nil];
         
@@ -54,6 +55,28 @@
     
     return height;
 }
+
+#pragma mark --UIScrollViewDelegate
+
+- (void)scrollViewDidScroll:(UIScrollView *)scrollView{
+
+    CGFloat height = scrollView.frame.size.height;
+    CGFloat contentYoffset = scrollView.contentOffset.y;
+    CGFloat distanceFromBottom = scrollView.contentSize.height - contentYoffset;
+    if (distanceFromBottom < height) {
+        self.isNeedScroll = YES;
+    }
+}
+
+-(void)scrollViewWillEndDragging:(UIScrollView *)scrollView withVelocity:(CGPoint)velocity targetContentOffset:(inout CGPoint *)targetContentOffset{
+    
+    if (velocity.y < 0 | velocity.y == 0) {
+        self.isNeedScroll = NO;
+    }
+    
+}
+
+
 - (void)receiveNotification:(NSNotification *)notification {
     
     NSString *string = notification.object;
@@ -63,7 +86,7 @@
         if ([string rangeOfString:@"type@=chatmsg"].location != NSNotFound) {
             model.cellType = CellNewChatMessageType;
             
-        }else if ([string rangeOfString:@"type@=dgb/gfid"].location != NSNotFound){
+        }else if ([string rangeOfString:@"type@=dgb"].location != NSNotFound){
             model.cellType = CellNewGiftType;
             model.gift = self.giftInfo;
             
@@ -77,7 +100,7 @@
             
         }else if ([string rangeOfString:@"type@=chatmessage"].location != NSNotFound){
             model.cellType = CellChatMessageType;
-        }else if ([string rangeOfString:@"type@=dgn/gfid"].location != NSNotFound){
+        }else if ([string rangeOfString:@"type@=dgn"].location != NSNotFound){
             model.cellType = CellGiftType;
              model.gift = self.giftInfo;
         }else if ([string rangeOfString:@"type@=bc_buy_deserve"].location != NSNotFound){
@@ -97,10 +120,10 @@
         //将model对象加入到信息model数组里面
         [self.data addObject:model];
         
+        //刷新数据，更新界面
+        [self reloadData];
         //是否在当前页面，是就重载并滑动到最后
-        if (self.isNotInView == NO) {
-            //刷新数据，更新界面
-            [self reloadData];
+        if (self.isNeedScroll == YES) {
             //将最后一个单元格滚动到表视图的底部显示
             NSIndexPath *indexPath = [NSIndexPath indexPathForRow:self.data.count-1 inSection:0];
             [self scrollToRowAtIndexPath:indexPath atScrollPosition:UITableViewScrollPositionBottom animated:YES];
@@ -109,7 +132,6 @@
     }
     
 }
-
 
 /*
 // Only override drawRect: if you perform custom drawing.

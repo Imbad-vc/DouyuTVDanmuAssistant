@@ -16,6 +16,8 @@
     NSString *msg;
     NSMutableAttributedString *abText;
     
+    
+    
     switch (self.cellType) {
         case CellNewChatMessageType:
             {
