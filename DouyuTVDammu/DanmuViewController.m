@@ -10,16 +10,34 @@
 #import "DanmuModel.h"
 #import "DanmuCell.h"
 #import "MyDataService.h"
+#import "AuthSocket.h"
+#import "DanmuSocket.h"
+#import "RoomDetailModel.h"
+#import "DetailView.h"
 #import "HMSegmentedControl.h"
+#import "DanmuTableView.h"
+#import "GiftTableView.h"
+#import "SearchView.h"
+
 
 
 
 @interface DanmuViewController ()
 
+@property (nonatomic,strong)AuthSocket *authSocket;
+@property (nonatomic,strong)DanmuSocket *danmuSocket;
+@property (nonatomic,strong)HMSegmentedControl *sgmControl;
+@property (nonatomic,strong)DanmuTableView *danmuTableView;
+@property (nonatomic,strong)GiftTableView *giftTableView;
+@property (nonatomic,strong)DetailView *detailView;
+@property (nonatomic,strong)SearchView *searchView;
+@property (nonatomic,strong)UIView *maskView;
+@property (nonatomic,strong)RoomDetailModel *detailModel;
+@property (nonatomic,strong)UIButton *favroite;
+
 @end
 
 @implementation DanmuViewController
-
 
 - (void)viewDidLoad{
     [super viewDidLoad];
@@ -29,27 +47,33 @@
     //保持屏幕常亮
     [UIApplication sharedApplication].idleTimerDisabled = YES;
     //添加收藏按钮★☆hi
-    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc]initWithTitle:@"☆" style:UIBarButtonItemStylePlain target:self action:@selector(favroiteButtonAciton)];
+//    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc]initWithImage:[UIImage imageNamed:@"btn_l_attention"] style:UIBarButtonItemStyleDone target:self action:@selector(favroiteButtonAciton)];
+    _favroite = [UIButton buttonWithType:UIButtonTypeCustom];
+    [_favroite addTarget:self action:@selector(favroiteButtonAciton) forControlEvents:UIControlEventTouchUpInside];
+    _favroite.frame = CGRectMake(0, 0, 28, 28);
+    [_favroite setImage:[UIImage imageNamed:@"btn_l_attention"] forState:UIControlStateNormal];
+    [_favroite setImage:[UIImage imageNamed:@"btn_l_attentioned"] forState:UIControlStateSelected];
+    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc]initWithCustomView:self.favroite];
     if ([self isFavroiteRoom]) {
-        self.navigationItem.rightBarButtonItem.title = @"★";
+        _favroite.selected = YES;
     }
     
     //创建SegmentedControl
-    self.sgmControl = [[HMSegmentedControl alloc]initWithFrame:CGRectMake(0, topLayOut, screenWidth, 40)];
-    self.sgmControl.sectionTitles = @[@"弹幕",@"礼物",@"详情",@"搜索"];
-    self.sgmControl.selectedSegmentIndex = 0;
-    self.sgmControl.backgroundColor = [UIColor whiteColor];
-    self.sgmControl.titleTextAttributes = @{
+    _sgmControl = [[HMSegmentedControl alloc]initWithFrame:CGRectMake(0, topLayOut, screenWidth, 40)];
+    _sgmControl.sectionTitles = @[@"弹幕",@"礼物",@"详情",@"搜索"];
+    _sgmControl.selectedSegmentIndex = 0;
+    _sgmControl.backgroundColor = [UIColor colorWithRed:241 green:241 blue:241 alpha:1];
+    _sgmControl.titleTextAttributes = @{
                                             NSForegroundColorAttributeName: [UIColor grayColor],
                                             NSFontAttributeName: [UIFont systemFontOfSize:15],
                                         };
-    self.sgmControl.selectedTitleTextAttributes = @{NSForegroundColorAttributeName: [UIColor blackColor]};
-    self.sgmControl.selectionIndicatorColor = [UIColor orangeColor];
-    self.sgmControl.selectionStyle = HMSegmentedControlSelectionStyleBox;
-    self.sgmControl.selectionIndicatorLocation = HMSegmentedControlSelectionIndicatorLocationUp;
-    [self.view addSubview:self.sgmControl];
+    _sgmControl.selectedTitleTextAttributes = @{NSForegroundColorAttributeName: [UIColor orangeColor]};
+    _sgmControl.selectionIndicatorColor = [UIColor orangeColor];
+    _sgmControl.selectionStyle = HMSegmentedControlSelectionStyleBox;
+    _sgmControl.selectionIndicatorLocation = HMSegmentedControlSelectionIndicatorLocationDown;
+    [self.view addSubview:_sgmControl];
     //创建ScrollView
-    UIScrollView *scrollView = [[UIScrollView alloc]initWithFrame:CGRectMake(0, CGRectGetMaxY(self.sgmControl.frame), screenWidth,screenHeight-topLayOut-CGRectGetHeight(self.sgmControl.frame))];
+    UIScrollView *scrollView = [[UIScrollView alloc]initWithFrame:CGRectMake(0, CGRectGetMaxY(_sgmControl.frame), screenWidth,screenHeight-topLayOut-CGRectGetHeight(_sgmControl.frame))];
     scrollView.contentSize = CGSizeMake(screenWidth*4, 200);
     scrollView.pagingEnabled = YES;
     scrollView.showsHorizontalScrollIndicator = NO;
@@ -57,12 +81,12 @@
     scrollView.backgroundColor = [UIColor whiteColor];
     [self.view addSubview:scrollView];
     
-    [self.sgmControl setIndexChangeBlock:^(NSInteger index) {
+    [_sgmControl setIndexChangeBlock:^(NSInteger index) {
         [scrollView scrollRectToVisible:CGRectMake(CGRectGetWidth(scrollView.frame)*index, 0, CGRectGetWidth(scrollView.frame), 200) animated:YES];
     }];
     //
     //添加两个tableView
-    self.danmuTableView = [[DanmuTableView alloc]initWithFrame:CGRectMake(0, 0, screenWidth, CGRectGetHeight(scrollView.frame))];
+    _danmuTableView= [[DanmuTableView alloc]initWithFrame:CGRectMake(0, 0, screenWidth, CGRectGetHeight(scrollView.frame))];
     self.giftTableView = [[GiftTableView alloc]initWithFrame:CGRectMake(screenWidth, 0, screenWidth, CGRectGetHeight(scrollView.frame))];
     //添加detailView
     self.detailView = [DetailView appView];
@@ -76,19 +100,19 @@
     NSString *filePath = [[NSBundle mainBundle] pathForResource:@"gift.plist" ofType:nil];
     NSArray *giftInfo = [NSArray arrayWithContentsOfFile:filePath];
     if (giftInfo.count != 0) {
-        self.danmuTableView.giftInfo = giftInfo;
+        _danmuTableView.giftInfo = giftInfo;
         self.giftTableView.giftInfo = giftInfo;
     }
     
-    [scrollView addSubview:self.danmuTableView];
+    [scrollView addSubview:_danmuTableView];
     [scrollView addSubview:self.giftTableView];
     [scrollView addSubview:self.detailView];
     [scrollView addSubview:self.searchView];
     //创建maskView
-    self.maskView = [[UIView alloc]initWithFrame:self.view.frame];
+    _maskView = [[UIView alloc]initWithFrame:self.view.frame];
     UITapGestureRecognizer *tapGesture=[[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(hideKeyboard)];
-    [self.maskView addGestureRecognizer:tapGesture];
-    self.maskView.hidden = YES;
+    [_maskView addGestureRecognizer:tapGesture];
+    _maskView.hidden = YES;
     [self.view addSubview:self.maskView];
 
     [self _requestData];
@@ -130,31 +154,23 @@
     
     dispatch_queue_t search = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
     dispatch_sync(search, ^{
-        if (self.danmuTableView.dataCache.count != 0) {
-            for (DanmuModel *model in self.danmuTableView.data) {
-                NSInteger searchText = [model.unColoredMsg rangeOfString:searchBar.text].location;
-                if (searchText != NSNotFound) {
-                    [self.searchView.data addObject:model];
-                }
-                
-            }
-            for (DanmuModel *model in self.danmuTableView.dataCache) {
-                NSInteger searchText = [model.unColoredMsg rangeOfString:searchBar.text].location;
-                if (searchText != NSNotFound) {
-                    [self.searchView.data addObject:model];
-                }
-                
-            }
-        }else{
-            for (DanmuModel *model in self.danmuTableView.data) {
-                NSInteger searchText = [model.unColoredMsg rangeOfString:searchBar.text].location;
-                if (searchText != NSNotFound) {
-                    [self.searchView.data addObject:model];
-                }
-                
+        for (DanmuModel *model in _danmuTableView.data) {
+            NSInteger searchText = [model.unColoredMsg rangeOfString:searchBar.text].location;
+            if (searchText != NSNotFound) {
+                [self.searchView.data addObject:model];
             }
             
         }
+        if (_danmuTableView.dataCache.count != 0) {
+            for (DanmuModel *model in _danmuTableView.dataCache) {
+                NSInteger searchText = [model.unColoredMsg rangeOfString:searchBar.text].location;
+                if (searchText != NSNotFound) {
+                    [self.searchView.data addObject:model];
+                }
+                
+            }
+        }
+        
         [self.searchView.searchTableView reloadData];
         
     });
@@ -181,17 +197,17 @@
     switch (page) {
         case 0:
             self.giftTableView.isNeedScroll = NO;
-            self.danmuTableView.isNeedScroll = YES;
-            [self.danmuTableView reloadData];
+            _danmuTableView.isNeedScroll = YES;
+            [_danmuTableView reloadData];
             break;
         case 1:
             self.giftTableView.isNeedScroll = YES;
-            self.danmuTableView.isNeedScroll = NO;
+            _danmuTableView.isNeedScroll = NO;
             [self.giftTableView reloadData];
             break;
         default:
             self.giftTableView.isNeedScroll = NO;
-            self.danmuTableView.isNeedScroll = NO;
+            _danmuTableView.isNeedScroll = NO;
             break;
     }
     [self.sgmControl setSelectedSegmentIndex:page animated:YES];
@@ -223,7 +239,7 @@
                       NSString *filePath = [[NSBundle mainBundle] pathForResource:@"gift.plist" ofType:nil];
                       [self.detailModel.gift writeToFile:filePath atomically:YES];
                       //赋值给tableView
-                      self.danmuTableView.giftInfo = self.detailModel.gift;
+                      _danmuTableView.giftInfo = self.detailModel.gift;
                       self.giftTableView.giftInfo = self.detailModel.gift;
                       
                       self.navigationItem.title = _detailModel.ownerName;
@@ -234,28 +250,28 @@
 #pragma mark - 收藏按钮Action
 - (void)favroiteButtonAciton{
 
-    NSDictionary *room = @{@"roomID":self.roomID,@"ownerName":_detailModel.ownerName};
+    NSDictionary *room = @{@"roomID":_roomID,@"ownerName":_detailModel.ownerName};
     NSUserDefaults *defaults =[NSUserDefaults standardUserDefaults];
     NSArray *favroite = [defaults objectForKey:@"favroiteRoom"];
     NSMutableArray *newArry;
     NSArray *newFavroite;
     if (favroite == nil) {
         newFavroite = @[room];
-        self.navigationItem.rightBarButtonItem.title = @"★";
+        _favroite.selected = YES;
     }else{
         newArry = favroite.mutableCopy;
         if ([self isFavroiteRoom]) {
             for (int i = 0; i <= newArry.count; i++) {
                 NSDictionary *room = newArry[i];
-                if ([self.roomID isEqualToString:room[@"roomID"]]) {
+                if ([_roomID isEqualToString:room[@"roomID"]]) {
                     [newArry removeObjectAtIndex:i];
                     break;
                 }
             }
-            self.navigationItem.rightBarButtonItem.title = @"☆";
+            _favroite.selected = NO;
         }else{
             [newArry addObject:room];
-            self.navigationItem.rightBarButtonItem.title = @"★";
+            _favroite.selected = YES;
         }
         newFavroite = newArry;
     }
@@ -269,7 +285,7 @@
     NSArray *favroite = [defaults objectForKey:@"favroiteRoom"];
     if (favroite != nil) {
         for (NSDictionary *room in favroite) {
-            if ([self.roomID isEqualToString:room[@"roomID"]]) {
+            if ([_roomID isEqualToString:room[@"roomID"]]) {
                 return YES;
             }
         }

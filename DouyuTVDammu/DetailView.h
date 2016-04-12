@@ -10,15 +10,6 @@
 #import "RoomDetailModel.h"
 
 @interface DetailView : UIView
-/*
- @property (nonatomic,copy)NSString *roomName;
- @property (nonatomic,copy)NSString *ownerName;
- @property (nonatomic,copy)NSString *details;
- @property (nonatomic,copy)NSString *ownerWeight;
- @property (nonatomic,copy)NSString *fans;
- @property (nonatomic,copy)NSString *gameName;
- @property (nonatomic,strong)NSArray *gift;
- */
 
 @property (weak, nonatomic) IBOutlet UILabel *roomName;
 @property (weak, nonatomic) IBOutlet UILabel *details;
@@ -27,6 +18,8 @@
 @property (weak, nonatomic) IBOutlet UILabel *ownerWeight;
 @property (weak, nonatomic) IBOutlet UILabel *fans;
 @property (weak, nonatomic) IBOutlet UILabel *gameName;
+@property (weak, nonatomic) IBOutlet UIImageView *headImage;
+@property (weak, nonatomic) IBOutlet UIView *stautsView;
 @property (nonatomic,strong)RoomDetailModel *model;
 
 + (instancetype)appView;

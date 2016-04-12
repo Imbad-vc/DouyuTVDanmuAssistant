@@ -8,11 +8,12 @@
 
 #import <UIKit/UIKit.h>
 #import "DanmuModel.h"
+#import "TYAttributedLabel.h"
 
 @interface DanmuCell : UITableViewCell
 
 @property (nonatomic,strong)UILabel *msg;
-
+@property (nonatomic, weak, readonly) TYAttributedLabel *label;
 @property (nonatomic,strong)DanmuModel *model;
 
 @end

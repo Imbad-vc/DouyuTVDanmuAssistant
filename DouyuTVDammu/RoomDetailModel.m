@@ -17,6 +17,9 @@
     _ownerName = data[@"nickname"];
     _details = data[@"show_details"];
     _ownerWeight = data[@"owner_weight"];
+    _ownerAvatarURL = data[@"owner_avatar"];
+    _roomSrceenURL = data[@"room_src"];
+    _showStatus = [data[@"show_status"]integerValue];
     _online =[NSString stringWithFormat:@"%@",data[@"online"]];
     _gift = data[@"gift"];
     _fans = [NSString stringWithFormat:@"%@",data[@"fans"]];

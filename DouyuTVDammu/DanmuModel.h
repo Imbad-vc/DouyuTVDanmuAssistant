@@ -8,23 +8,22 @@
 
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
+@class TYTextContainer;
 
 @interface DanmuModel : NSObject
 
 typedef NS_ENUM(NSInteger,CellType){
-    CellChatMessageType,
-    CellGiftType,
-    CellUserEnterType,
     CellBanType,
     CellNewChatMessageType,
     CellNewGiftType,
     CellNewUserEnterType,
     CellDeserveType,
 };
-@property (nonatomic,copy)NSMutableAttributedString *coloredMsg;
+@property (nonatomic,strong)TYTextContainer *textContainer;
 @property (nonatomic,copy)NSString *unColoredMsg;
 @property (nonatomic,assign)CellType cellType;
 @property (nonatomic,strong)NSArray *gift;
+@property (nonatomic,copy)NSString *dataString;
 - (void)setModelFromStirng:(NSString *)string;
 
 @end

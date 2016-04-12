@@ -7,7 +7,7 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "CocoaAsyncSocket.h"
+#import "AsyncSocket.h"
 #import "ServerModel.h"
 #import "NSString+InfoGet.h"
 

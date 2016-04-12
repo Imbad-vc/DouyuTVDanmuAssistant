@@ -18,6 +18,10 @@
 @property (nonatomic,strong)NSArray *gift;
 @property (nonatomic,copy)NSString *online;
 @property (nonatomic,copy)NSString *fans;
+@property (nonatomic,copy)NSString *ownerAvatarURL;
+@property (nonatomic,copy)NSString *roomSrceenURL;
+@property (nonatomic,assign)NSInteger showStatus;
+
 
 - (void)setModelFromDictionary:(NSDictionary *)dic;
 

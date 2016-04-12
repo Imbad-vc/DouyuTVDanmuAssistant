@@ -9,6 +9,7 @@
 #import "NSString+InfoGet.h"
 #import <CommonCrypto/CommonDigest.h>
 
+
 @implementation NSString (InfoGet)
 
 static inline char itoh(int i) {
@@ -103,7 +104,7 @@ static inline char itoh(int i) {
         hexString = [unSubstring substringToIndex:grpIDRange.location];
         
     }else{
-        if (upperString.length < 24){
+        if (upperString.length <= 24){
             return nil;
         }
         NSString *subString = [upperString substringFromIndex:24];
@@ -122,33 +123,6 @@ static inline char itoh(int i) {
     NSString *unicodeString = [NSString stringWithCString:myBuffer encoding:4];
     return unicodeString;
     
-}
-
-- (NSString *)regexString:(NSString *)pattern{
-    NSError *erro;
-    NSString *string;
-    NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:pattern options:NSRegularExpressionAllowCommentsAndWhitespace error:&erro];
-    if (regex != nil) {
-        NSTextCheckingResult *result = [regex firstMatchInString:self options:NSMatchingReportCompletion range:NSMakeRange(0,self.length)];
-        if (result) {
-            NSRange contentResult = [result rangeAtIndex:0];
-            
-            string = [self substringWithRange:contentResult];
-            return string;
-        }
-    }
-    return nil;
-}
-
-- (CGFloat)getLableSize:(NSString *)content sizeSet:(CGFloat)size sizeNeed:(NSString *)heightOrWidth font:(UIFont *)font{
-    if ([heightOrWidth isEqualToString:@"height"]) {
-        CGSize constrained = [content sizeWithFont:font constrainedToSize:CGSizeMake(size, MAXFLOAT)];
-        return constrained.height;
-    }else if([heightOrWidth isEqualToString:@"width"]){
-        CGSize constrained = [content sizeWithFont:font constrainedToSize:CGSizeMake(MAXFLOAT, size)];
-        return constrained.width;
-    }
-    return 0;
 }
 
 @end

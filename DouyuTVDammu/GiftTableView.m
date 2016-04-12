@@ -20,34 +20,32 @@
         if ([string rangeOfString:@"type@=dgb"].location != NSNotFound){
             model.cellType = CellNewGiftType;
             model.gift = self.giftInfo;
-        }else if ([string rangeOfString:@"type@=dgn"].location != NSNotFound){
-            model.cellType = CellGiftType;
-            model.gift = self.giftInfo;
         }else if ([string rangeOfString:@"type@=bc_buy_deserve"].location != NSNotFound){
             model.cellType = CellDeserveType;
         }else{
-//            NSLog(@"%@",string);
             model = nil;
             return;
         }
         
         [model setModelFromStirng:string];
         
-        if (self.data.count > 500) {
-            [self.dataCache addObjectsFromArray:self.data];
-            [self.data removeAllObjects];
+        if (self.data.count > 200) {
+            [self.data removeObjectsInRange:NSMakeRange(0, 100)];
         }
-        
         //将model对象加入到信息model数组里面
         [self.data addObject:model];
-        //刷新数据，更新界面
-        [self reloadData];
-        if (self.isNeedScroll == YES) {
-            //将最后一个单元格滚动到表视图的底部显示
-            NSIndexPath *indexPath = [NSIndexPath indexPathForRow:self.data.count-1 inSection:0];
-            [self scrollToRowAtIndexPath:indexPath atScrollPosition:UITableViewScrollPositionBottom animated:YES];
+        dispatch_async(dispatch_get_main_queue(), ^{
             
-        }
+            //刷新数据，更新界面
+            [self reloadData];
+            //是否需要滑动到最后
+            if (self.isNeedScroll == YES) {
+                //将最后一个单元格滚动到表视图的底部显示
+                NSIndexPath *indexPath = [NSIndexPath indexPathForRow:self.data.count-1 inSection:0];
+                [self scrollToRowAtIndexPath:indexPath atScrollPosition:UITableViewScrollPositionBottom animated:NO];
+                
+            }
+        });
     }
     
 }

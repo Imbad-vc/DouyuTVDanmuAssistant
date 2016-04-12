@@ -9,141 +9,153 @@
 
 #import "DanmuModel.h"
 #import "NSString+InfoGet.h"
+#import "TYAttributedLabel.h"
+#import "RegexKitLite.h"
+
 @implementation DanmuModel
+
+#define RGB(r,g,b,a)	[UIColor colorWithRed:r/255.0 green:g/255.0 blue:b/255.0 alpha:a]
 
 - (void)setModelFromStirng:(NSString *)string{
 
+    _dataString = string;
     NSString *msg;
-    NSMutableAttributedString *abText;
-    
-    
+    TYTextContainer *container = [[TYTextContainer alloc]init];
+    container.font = [UIFont systemFontOfSize:15];
+    container.linesSpacing = 0;
+    container.characterSpacing = 0;
     
     switch (self.cellType) {
         case CellNewChatMessageType:
             {
-                NSString *contentPattern = @"(?<=txt@=).*(?=\/cid)";
-                NSString *nickPattern = @"(?<=nn@=).*(?=\/txt)";
-                NSString *nickname = [string regexString:nickPattern];
-                NSString *content = [string regexString:contentPattern];
-                msg = [NSString stringWithFormat:@"%@:%@",nickname,content];
-                abText = [[NSMutableAttributedString alloc]initWithString:msg];
-                [abText addAttribute:NSForegroundColorAttributeName value:[UIColor blueColor] range:NSMakeRange(0,nickname.length)];
-                [abText addAttribute:NSForegroundColorAttributeName value:[UIColor grayColor] range:NSMakeRange(nickname.length, 1)];
+
+                
+                NSString *nickPattern = @"(?<=nn@=).*?(?=/)";
+                NSString *contentPattern = @"(?<=txt@=).*?(?=/)";
+                
+                NSString *name = [[string componentsMatchedByRegex:nickPattern]firstObject];
+                NSString *unReplaceTXT = [[string componentsMatchedByRegex:contentPattern]firstObject];
+                NSString *replaceTXT = [unReplaceTXT stringByReplacingOccurrencesOfRegex:@"@A" withString:@"@"];
+                NSString *txt = [replaceTXT stringByReplacingOccurrencesOfRegex:@"@S" withString:@"/"];
+                
+                msg = [NSString stringWithFormat:@"%@:%@",name,txt];
+                
+                // 属性文本生成器
+                container.text = msg;
+                NSMutableArray *tmpArray = [NSMutableArray array];
+                
+                // 正则匹配表情
+                [msg enumerateStringsMatchedByRegex:@"\\[emot:(\\w+\\d+)\\]" usingBlock:^(NSInteger captureCount, NSString *const __unsafe_unretained *capturedStrings, const NSRange *capturedRanges, volatile BOOL *const stop) {
+                    
+                    if (captureCount > 0) {
+                        // 图片信息储存
+                        TYImageStorage *imageStorage = [[TYImageStorage alloc]init];
+                        imageStorage.cacheImageOnMemory = YES;
+                        imageStorage.imageName = capturedStrings[1];
+                        imageStorage.range = capturedRanges[0];
+                        imageStorage.size = CGSizeMake(30, 30);
+                        
+                        [tmpArray addObject:imageStorage];
+                    }
+                }];
+                TYTextStorage *textStorage = [[TYTextStorage alloc]init];
+                textStorage.range = [msg rangeOfString:name];
+                textStorage.textColor = RGB(30, 153, 247, 1);
+                textStorage.font = [UIFont systemFontOfSize:15];
+                [container addTextStorage:textStorage];
+                
+                // 添加表情数组到label
+                [container addTextStorageArray:tmpArray];
             }
             break;
         case CellNewGiftType:
             {
-                NSString *gifPattern = @"(?<=gfid@=).*(?=\/gs)";
-                NSString *namePattern = @"(?<=nn@=).*(?=\/ic)";
-                NSString *hitPattern = @"(?<=hits@=).*(?=\/)";
-                NSString *nickname;
-                if ([string regexString:namePattern].length == 0) {
-                    nickname = [string regexString:@"(?<=nn@=).*(?=\/ic)"];
-                }else{
-                    nickname = [string regexString:namePattern];
-                }
-                NSString *gift = [string regexString:gifPattern];
-                NSString *hits = [string regexString:hitPattern];
+
+                NSString *nickPattern = @"(?<=nn@=).*?(?=/)";
+                NSString *giftPattern = @"(?<=gfid@=).*?(?=/)";
+                NSString *hitPattern = @"(?<=hits@=).*?(?=/)";
+                
+                NSString *name = [[string componentsMatchedByRegex:nickPattern]firstObject];
+                NSString *gift = [[string componentsMatchedByRegex:giftPattern]firstObject];
+                NSString *hits = [[string componentsMatchedByRegex:hitPattern] firstObject];
                 if (hits == NULL) {
                     hits = @"1";
                 }
                 NSString *giftName;
+                NSURL *giftIconURL;
                 for (NSDictionary *dic in self.gift) {
                     NSString *giftID = dic[@"id"];
                     if ([gift isEqualToString:giftID]) {
                         giftName = dic[@"name"];
+                        giftIconURL = [NSURL URLWithString:dic[@"mobile_icon_v2"]];
+                        break;
                     }
                 }
-                NSString *temp = [NSString stringWithFormat:@"%@给主播赠送了%@ x%@",nickname,giftName,hits];
-                if ([temp rangeOfString:@"/"].location != NSNotFound) {
-                    msg = [temp substringToIndex:[temp rangeOfString:@"/"].location];
-                }else{
-                    msg = temp;
-                }
-                abText = [[NSMutableAttributedString alloc]initWithString:msg];
-                [abText addAttribute:NSForegroundColorAttributeName value:[UIColor redColor] range:NSMakeRange(0,nickname.length)];
-                [abText addAttribute:NSForegroundColorAttributeName value:[UIColor redColor] range:NSMakeRange(nickname.length+6, msg.length-nickname.length-6)];
+                NSString *text = [NSString stringWithFormat:@"%@ 赠送给主播%@",name,giftName];
+                
+                container = [[TYTextContainer alloc]init];
+                container.text = text;
+                
+                TYTextStorage *nameTextStorage = [[TYTextStorage alloc]init];
+                nameTextStorage.range = [text rangeOfString:name];
+                nameTextStorage.textColor = RGB(30, 153, 247, 1);
+                nameTextStorage.font = [UIFont systemFontOfSize:15];
+                [container addTextStorage:nameTextStorage];
+                
+                TYImageStorage *imageStorage = [[TYImageStorage alloc]init];
+                imageStorage.imageURL = giftIconURL;
+                imageStorage.size = CGSizeMake(30, 30);
+                [container appendTextStorage:imageStorage];
+                
+                TYTextStorage *giftTextStorage = [[TYTextStorage alloc]init];
+                giftTextStorage.text = [NSString stringWithFormat:@"%@连击",hits];
+                giftTextStorage.font = [UIFont systemFontOfSize:15];
+                [container appendTextStorage:giftTextStorage];
+                
+                msg = [NSString stringWithFormat:@"%@%@连击",text,hits];
+                
             }
             break;
         case CellNewUserEnterType:
             {
-                NSString *nickPattern = @"(?<=nn@=).*(?=\/str)";
-                NSString *nickname = [string regexString:nickPattern];
-                msg = [NSString stringWithFormat:@"%@ 进入了直播间",nickname];
-                abText = [[NSMutableAttributedString alloc]initWithString:msg];
-                [abText addAttribute:NSForegroundColorAttributeName value:[UIColor redColor] range:NSMakeRange(0, nickname.length)];
+                NSString *nickPattern = @"(?<=nn@=).*?(?=/)";
+                NSString *name = [[string componentsMatchedByRegex:nickPattern]firstObject];
+                msg = [NSString stringWithFormat:@"%@ 进入了直播间",name];
+                
+                container.text = msg;
+                
+                TYTextStorage *nameTextStorage = [[TYTextStorage alloc]init];
+                nameTextStorage.range = [msg rangeOfString:name];
+                nameTextStorage.textColor = RGB(257, 100, 113, 1);
+                nameTextStorage.font = [UIFont systemFontOfSize:15];
+                [container addTextStorage:nameTextStorage];
+                
             }
             break;
         case CellBanType:
             {
-                NSString *nickPattern = @"(?<=snick@=).*(?=\/dnick)";
-                NSString *banNickPattern = @"(?<=\/dnick@=).*(?=\/)";
-                NSString *nickname = [string regexString:nickPattern];
-                NSString *banedName = [string regexString:banNickPattern];
-                msg = [NSString stringWithFormat:@"管理员%@封禁了%@",nickname,banedName];
-                abText = [[NSMutableAttributedString alloc]initWithString:msg];
-                [abText addAttribute:NSForegroundColorAttributeName value:[UIColor blueColor] range:NSMakeRange(3, nickname.length)];
-                [abText addAttribute:NSForegroundColorAttributeName value:[UIColor redColor] range:NSMakeRange(6+nickname.length, banedName.length)];
+                NSString *nickPattern = @"(?<=snick@=).*?(?=/)";
+                NSString *banedNamePattern = @"(?<=dnick@=).*?(?=/)";
+                NSString *name = [[string componentsMatchedByRegex:nickPattern]firstObject];
+                NSString *banedName = [[string componentsMatchedByRegex:banedNamePattern]firstObject];
+                msg = [NSString stringWithFormat:@"管理员%@封禁了%@",name,banedName];
+                
+                container.text = msg;
+                
+                container.textColor = RGB(257, 100, 113, 1);
                 
             }
             break;
-        case CellChatMessageType:
-        {
-            NSString *nickPattern = @"(?<=Snick@A=).*(?=@Srg)";
-            NSString *contentPattern = @"(?<=content@=).*(?=\/snick)";
-            NSString *nickname = [string regexString:nickPattern];
-            NSString *content = [string regexString:contentPattern];
-            msg = [NSString stringWithFormat:@"%@:%@",nickname,content];
-            abText = [[NSMutableAttributedString alloc]initWithString:msg];
-            [abText addAttribute:NSForegroundColorAttributeName value:[UIColor blueColor] range:NSMakeRange(0,nickname.length)];
-            [abText addAttribute:NSForegroundColorAttributeName value:[UIColor grayColor] range:NSMakeRange(nickname.length, 1)];
-        }
-            break;
-        case CellGiftType:
-        {
-            NSString *gifPattern = @"(?<=gfid@=).*(?=\/gs)";
-            NSString *namePattern = @"(?<=src_ncnm@=).*(?=\/rid)";
-            NSString *hitPattern = @"(?<=hits@=).*(?=\/sid)";
-            NSString *gift = [string regexString:gifPattern];
-            NSString *nickname = [string regexString:namePattern];
-            NSString *hits = [string regexString:hitPattern];
-            NSString *giftName;
-            for (NSDictionary *dic in self.gift) {
-                NSString *giftID = dic[@"id"];
-                if ([gift isEqualToString:giftID]) {
-                    giftName = dic[@"name"];
-                }
-            }
-            NSString *temp = [NSString stringWithFormat:@"%@给主播赠送了%@ x%@",nickname,giftName,hits];
-            if ([temp rangeOfString:@"/"].location != NSNotFound) {
-                msg = [temp substringToIndex:[temp rangeOfString:@"/"].location];
-            }else{
-                msg = temp;
-            }
-            abText = [[NSMutableAttributedString alloc]initWithString:msg];
-            [abText addAttribute:NSForegroundColorAttributeName value:[UIColor redColor] range:NSMakeRange(0,nickname.length)];
-            [abText addAttribute:NSForegroundColorAttributeName value:[UIColor redColor] range:NSMakeRange(nickname.length+6, msg.length-nickname.length-6)];
-        }
-            break;
-        case CellUserEnterType:
-        {
-            NSString *nickPattern = @"(?<=Snick@A=).*(?=@Srg)";
-            NSString *nickname = [string regexString:nickPattern];
-            msg = [NSString stringWithFormat:@"%@ 进入了直播间",nickname];
-            abText = [[NSMutableAttributedString alloc]initWithString:msg];
-            [abText addAttribute:NSForegroundColorAttributeName value:[UIColor redColor] range:NSMakeRange(0, nickname.length)];
-        }
-            break;
         case CellDeserveType:
-        {
-            NSString *nickPattern = @"(?<=Snick@A=).*(?=@Sicon)";
-            NSString *levPattern = @"(?<=lev@=).*(?=\/rid)";
-            NSString *hitPattern = @"(?<=hits@=).*(?=\/sid)";
-            NSInteger levle = [[string regexString:levPattern] integerValue];
-            NSString *nickname = [string regexString:nickPattern];
-            NSString *hits = [string regexString:hitPattern];
+            {
+            NSString *nickPattern = @"(?<=Snick@A=).*?(?=@)";
+            NSString *levPattern = @"(?<=lev@=).*?(?=/)";
+            NSString *hitPattern = @"(?<=hits@=).*?(?=/)";
+            NSString *name = [[string componentsSeparatedByRegex:nickPattern]firstObject];
+            NSInteger levle = [[[string componentsSeparatedByRegex:levPattern]firstObject]integerValue];
+            NSString *hits = [[string componentsSeparatedByRegex:hitPattern]firstObject];
             NSString *deserve;
-            
+
             switch (levle) {
                 case 1:
                     deserve = @"初级酬勤";
@@ -157,18 +169,28 @@
                 default:
                     break;
             }
+            msg = [NSString stringWithFormat:@"%@ 给主播赠送了%@%@连击",name,deserve,hits];
             
-            msg = [NSString stringWithFormat:@"%@给主播赠送了%@ x%@",nickname,deserve,hits];;
-            abText = [[NSMutableAttributedString alloc]initWithString:msg];
-            [abText addAttribute:NSForegroundColorAttributeName value:[UIColor redColor] range:NSMakeRange(0,nickname.length)];
-            [abText addAttribute:NSForegroundColorAttributeName value:[UIColor redColor] range:NSMakeRange(nickname.length+6, msg.length-nickname.length-6)];
+            container.text = msg;
+            TYTextStorage *nameTextStorage = [[TYTextStorage alloc]init];
+            nameTextStorage.range = [msg rangeOfString:name];
+            nameTextStorage.textColor = RGB(30, 153, 247, 1);
+            nameTextStorage.font = [UIFont systemFontOfSize:15];
+            [container addTextStorage:nameTextStorage];
             
+            TYTextStorage *deserveTextStorage = [[TYTextStorage alloc]init];
+            deserveTextStorage.range = [msg rangeOfString:deserve];
+            deserveTextStorage.textColor = RGB(198, 53, 150, 1);
+            deserveTextStorage.font = [UIFont systemFontOfSize:15];
+            [container addTextStorage:deserveTextStorage];
+            
+
         }
         default:
             break;
     }
     _unColoredMsg = msg;
-    _coloredMsg = abText;
+    _textContainer = container;
 }
 
 

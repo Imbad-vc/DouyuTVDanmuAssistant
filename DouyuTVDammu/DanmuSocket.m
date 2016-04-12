@@ -58,7 +58,8 @@
 #pragma marl --回调方法
 //连接成功
 - (void)onSocket:(AsyncSocket *)sock didConnectToHost:(NSString *)host port:(UInt16)port{
-    
+    NSLog(@"---弹幕服务器连接成功---");
+
     /*
      游客登陆信息
      type@=loginreq/username@=visitor13227520/password@=1234567890123456/roomid@=213116/

@@ -15,6 +15,16 @@
     return [objs lastObject];
 }
 
+- (instancetype)initWithCoder:(NSCoder *)aDecoder{
+    self = [super initWithCoder:aDecoder];
+    if (self) {
+        if ([self.searchTableView respondsToSelector:@selector(setEstimatedRowHeight:)]) {
+            self.searchTableView.estimatedRowHeight = 40;
+        }
+    }
+    return self;
+}
+
 #pragma mark ----UITableViewDataSource----
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
@@ -24,18 +34,15 @@
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
     DanmuCell *cell = [tableView dequeueReusableCellWithIdentifier:@"danmuCell" forIndexPath:indexPath];
     cell.model = self.data[indexPath.row];
+    cell.label.preferredMaxLayoutWidth = CGRectGetWidth(self.frame)-10;
+    cell.label.textContainer = [cell.label.textContainer createTextContainerWithTextWidth:CGRectGetWidth(self.frame)-10];
     return cell;
 }
 
 #pragma  mark -- UITableView delegate
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
-    
-    DanmuModel *model = self.data[indexPath.row];
-    CGSize size = [model.unColoredMsg sizeWithFont:[UIFont systemFontOfSize:15] constrainedToSize:CGSizeMake([UIScreen mainScreen].bounds.size.width-16, MAXFLOAT)];
-    CGFloat height = size.height + 16;
-    
-    return height;
+    return UITableViewAutomaticDimension;
 }
 
 /*

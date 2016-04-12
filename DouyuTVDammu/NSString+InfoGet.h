@@ -7,7 +7,6 @@
 //
 
 #import <Foundation/Foundation.h>
-#import <UIKit/UIKit.h>
 
 @interface NSString (InfoGet)
 
@@ -16,6 +15,4 @@
 + (NSString *)timeString;//获取时间戳（秒）
 - (NSMutableData *)stringToHexData;//转换16位的data
 + (NSString *)hexDateToString:(NSData *)data;//将16进制的data转换为字符串
-- (NSString *)regexString:(NSString *)pattern;
-- (CGFloat)getLableSize:(NSString *)content sizeNeed:(NSString *)heightOrWidth font:(UIFont *)font;
 @end

@@ -21,7 +21,7 @@
     self.socket = [[AsyncSocket alloc]initWithDelegate:self];
     [self setServerConfig];
     NSError *error = nil;
-    ServerModel *sevCfg = self.server[1];
+    ServerModel *sevCfg = self.server[5];
 
     [self.socket connectToHost:sevCfg.ip onPort:sevCfg.port withTimeout:30 error:&error];
     

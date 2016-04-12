@@ -9,40 +9,56 @@
 #import "DanmuCell.h"
 
 @implementation DanmuCell
-- (instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier{
-    self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
-    if (self) {
+- (instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier
+{
+    if (self = [super initWithStyle:style reuseIdentifier:reuseIdentifier]) {
         //取消单元格选中效果
         self.selectionStyle = UITableViewCellSelectionStyleNone;
-        
-        //创建子视图
-        [self _createSubViews];
+        self.backgroundColor = [UIColor clearColor];
+        [self addAtrribuedLabel];
     }
     return self;
 }
 
-- (void)_createSubViews{
-    
-    _msg = [[UILabel alloc]initWithFrame:CGRectZero];
-    _msg.font = [UIFont systemFontOfSize:15];
-    _msg.numberOfLines = 0;
-    [self.contentView addSubview:_msg];
+- (id)initWithCoder:(NSCoder *)aDecoder
+{
+    if (self = [super initWithCoder:aDecoder]) {
+        self.selectionStyle = UITableViewCellSelectionStyleNone;
+        [self addAtrribuedLabel];
+    }
+    return self;
 }
 
 - (void)setModel:(DanmuModel *)model{
     _model = model;
-    _msg.attributedText = _model.coloredMsg;
-    NSString *msg = _model.unColoredMsg;
-    
-    CGFloat width = [UIScreen mainScreen].bounds.size.width;
-    CGSize size = [msg sizeWithFont:[UIFont systemFontOfSize:15] constrainedToSize:CGSizeMake(width-16, MAXFLOAT)];
-    //取出内容计算后的高度
-    CGFloat height = size.height;
-    
-    
-    _msg.frame = CGRectMake(8, 8, width-16, height);
-
+    self.label.textContainer = model.textContainer;
+    self.label.backgroundColor = [UIColor clearColor];
     
 }
+
+- (void)addAtrribuedLabel
+{
+    TYAttributedLabel *label = [[TYAttributedLabel alloc]init];
+    label.translatesAutoresizingMaskIntoConstraints = NO;
+    [self.contentView addSubview:label];
+    _label = label;
+    
+    NSArray *verticalContrainsts = [NSLayoutConstraint constraintsWithVisualFormat:@"V:|-3-[label]-3-|" options:0 metrics:nil views:@{@"label":_label}];
+    NSArray *horizontalCOntraints = [NSLayoutConstraint constraintsWithVisualFormat:@"H:|-5-[label]-5-|" options:0 metrics:nil views:@{@"label":_label}];
+    
+    if ([[UIDevice currentDevice].systemVersion doubleValue] >= 8.0) {
+        [NSLayoutConstraint activateConstraints:verticalContrainsts];
+        [NSLayoutConstraint activateConstraints:horizontalCOntraints];
+    } else {
+        [self.contentView addConstraints:verticalContrainsts];
+        [self.contentView addConstraints:horizontalCOntraints];
+    }
+}
+
+- (void)setSelected:(BOOL)selected animated:(BOOL)animated {
+    [super setSelected:selected animated:animated];
+    
+}
+
 
 @end

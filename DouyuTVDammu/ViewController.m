@@ -80,7 +80,7 @@
             [self.navigationController pushViewController:dmViewC animated:YES];
             
         }else{
-            UIAlertView *warning = [[UIAlertView alloc]initWithTitle:@"出错了！" message:@"该房间不存在或者已被斗鱼关闭，请确认输入无误。" delegate:self cancelButtonTitle:@"取消" otherButtonTitles:@"确定", nil];
+            UIAlertView *warning = [[UIAlertView alloc]initWithTitle:@"出错了！" message:@"该房间不存在或者已被斗鱼关闭，请确认输入无误。" delegate:self cancelButtonTitle:@"取消" otherButtonTitles:nil, nil];
             [warning show];
         }
     }

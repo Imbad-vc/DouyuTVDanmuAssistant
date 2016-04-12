@@ -16,4 +16,5 @@
 @property (nonatomic,strong)NSMutableArray *dataCache;
 @property (nonatomic,strong)NSArray *giftInfo;
 @property (nonatomic,assign)BOOL isNeedScroll;
+
 @end
