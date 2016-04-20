@@ -26,11 +26,14 @@
     do {
         
         socketData.loction += 12;
+        //获取数据长度
         [subData getBytes:&socketData->_length range:NSMakeRange(0, 4)];
         socketData.length -= 8;
+        //截取相对应的数据
         NSData *contentData = [subData subdataWithRange:NSMakeRange(12, socketData.length)];
+
         NSString *content = [[NSString alloc]initWithData:contentData encoding:NSUTF8StringEncoding];
-        
+        //截取余下的数据
         subData = [data subdataWithRange:NSMakeRange(socketData.length+socketData.loction, data.length-socketData.length-socketData.loction)];
         
         [contents addObject:content];
