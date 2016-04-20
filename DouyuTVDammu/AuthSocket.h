@@ -13,5 +13,6 @@ static const NSString *kMagicCode = @"7oE9nPEG9xXV69phU31FYCLUagKeYtsF";
 @interface AuthSocket : DouyuTVSocket
 
 @property(nonatomic,copy)void(^InfoBlock)(NSString *vistorID,NSString *groupID);
++ (id)sharedInstance;
 
 @end

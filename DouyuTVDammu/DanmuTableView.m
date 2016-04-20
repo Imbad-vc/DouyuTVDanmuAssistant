@@ -8,7 +8,6 @@
 
 #import "DanmuTableView.h"
 
-
 @implementation DanmuTableView
 
 - (instancetype)initWithFrame:(CGRect)frame{
@@ -31,8 +30,6 @@
         }
         //监听通知
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(receiveNotification:) name:@"kReceiveMessageNotification" object:nil];
-        
-
     }
     return self;
 }
@@ -125,12 +122,13 @@
             
             //刷新数据，更新界面
             [self reloadData];
+
             //是否需要滑动到最后
             if (self.isNeedScroll == YES) {
                 //将最后一个单元格滚动到表视图的底部显示
-                NSIndexPath *indexPath = [NSIndexPath indexPathForRow:self.data.count-1 inSection:0];
-                [self scrollToRowAtIndexPath:indexPath atScrollPosition:UITableViewScrollPositionBottom animated:NO];
-                
+                [self scrollToBtn];
+
+            }else{
             }
         });
         
@@ -139,6 +137,11 @@
     
 }
 
+- (void)scrollToBtn{
+    NSIndexPath *indexPath = [NSIndexPath indexPathForRow:self.data.count-1 inSection:0];
+    [self scrollToRowAtIndexPath:indexPath atScrollPosition:UITableViewScrollPositionBottom animated:NO];
+    self.isNeedScroll = YES;
+}
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
     DanmuModel *model = self.data[indexPath.row];

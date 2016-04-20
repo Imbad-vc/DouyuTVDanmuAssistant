@@ -35,6 +35,7 @@
     _headImage.image = [UIImage imageNamed:@"Image_column_default"];
     _stautsView.layer.cornerRadius = 4*M_PI;
     _stautsView.layer.masksToBounds = YES;
+    [self layoutIfNeeded];
     dispatch_async(dispatch_get_main_queue(), ^{
         _headImage.image = [UIImage imageWithData:[NSData dataWithContentsOfURL:[NSURL URLWithString:_model.ownerAvatarURL]]];
     });
@@ -67,7 +68,6 @@
         
         
     });
-    [self setNeedsLayout];
     [self layoutIfNeeded];
 }
 @end

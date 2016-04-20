@@ -7,6 +7,8 @@
 //
 
 #import "SearchView.h"
+#import "DanmuCell.h"
+#import "DanmuModel.h"
 
 @implementation SearchView
 

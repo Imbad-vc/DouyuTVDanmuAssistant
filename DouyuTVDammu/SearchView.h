@@ -7,8 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "DanmuCell.h"
-#import "DanmuModel.h"
+
 
 @interface SearchView : UIView
 

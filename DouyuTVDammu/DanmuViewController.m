@@ -118,7 +118,7 @@
     [self _requestData];
    
         //链接服务器
-    _authSocket = [AuthSocket new];
+    _authSocket = [AuthSocket sharedInstance];
     _authSocket.room = self.roomID;
     [_authSocket connectSocketHost];
     _danmuSocket = [DanmuSocket new];

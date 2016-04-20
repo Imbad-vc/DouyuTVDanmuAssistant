@@ -7,10 +7,20 @@
 //
 
 #import "AuthSocket.h"
+#import "SocketData.h"
 
-
-
+static AuthSocket *instance = nil;
 @implementation AuthSocket
+//单例
++ (id)sharedInstance{
+    @synchronized(self) {
+        if (instance == nil) {
+            
+            instance = [[AuthSocket alloc]init];
+        }
+    }
+    return instance;
+}
 
 - (void)setServerConfig{
     
@@ -72,22 +82,9 @@
     if (data.length != 0) {
         
         NSString *string = [NSString hexDateToString:data];
+        [SocketData douyuData:data];
         //提取两个ID
-        if ([string rangeOfString:@"login"].location != NSNotFound) {
-            NSRange range = [string rangeOfString:@"username@="];
-            NSString *unSubString = [string substringFromIndex:range.location + range.length];
-            self.vistorID = [unSubString substringToIndex:[unSubString rangeOfString:@"/"].location];
-        }else if ([string rangeOfString:@"gid"].location != NSNotFound) {
-            NSRange range = [string rangeOfString:@"gid@="];
-            NSString *unSubSring = [string substringFromIndex:range.location + range.length];
-            self.groupID = [unSubSring substringToIndex:[unSubSring rangeOfString:@"/"].location];
-        }
-        //将2个ID传出去
-        if (self.vistorID.length != 0 && self.groupID.length != 0) {
-            NSLog(@"---获得游客ID以及弹幕组---");
-
-            self.InfoBlock(self.vistorID,self.groupID);
-        }
+        
         
     }
     

@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		161F8AFB1CC78D5A00C8F544 /* SocketData.m in Sources */ = {isa = PBXBuildFile; fileRef = 161F8AFA1CC78D5A00C8F544 /* SocketData.m */; };
 		163EE4B11CB423290025581D /* RegexKitLite.m in Sources */ = {isa = PBXBuildFile; fileRef = 163EE4B01CB423290025581D /* RegexKitLite.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		166464951CB59C9B001667D7 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 166464941CB59C9B001667D7 /* Assets.xcassets */; };
 		166464CD1CB59D7F001667D7 /* dy001.png in Resources */ = {isa = PBXBuildFile; fileRef = 166464971CB59D7E001667D7 /* dy001.png */; };
@@ -107,6 +108,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		161F8AF91CC78D5A00C8F544 /* SocketData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SocketData.h; sourceTree = "<group>"; };
+		161F8AFA1CC78D5A00C8F544 /* SocketData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SocketData.m; sourceTree = "<group>"; };
 		163EE4AF1CB423290025581D /* RegexKitLite.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RegexKitLite.h; sourceTree = "<group>"; };
 		163EE4B01CB423290025581D /* RegexKitLite.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RegexKitLite.m; sourceTree = "<group>"; };
 		166464941CB59C9B001667D7 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -316,6 +319,8 @@
 			children = (
 				16E6DA0F1C80AB9A005B17EF /* NSString+InfoGet.h */,
 				16E6DA101C80AB9A005B17EF /* NSString+InfoGet.m */,
+				161F8AF91CC78D5A00C8F544 /* SocketData.h */,
+				161F8AFA1CC78D5A00C8F544 /* SocketData.m */,
 				163EE4AF1CB423290025581D /* RegexKitLite.h */,
 				163EE4B01CB423290025581D /* RegexKitLite.m */,
 				16A474181C9805D20020AF34 /* MyDataService.h */,
@@ -714,6 +719,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				163EE4B11CB423290025581D /* RegexKitLite.m in Sources */,
+				161F8AFB1CC78D5A00C8F544 /* SocketData.m in Sources */,
 				16CD88241C9EB35D007A3557 /* DanmuTableView.m in Sources */,
 				16E6DA111C80AB9A005B17EF /* NSString+InfoGet.m in Sources */,
 				16EDBFE01C94559600415C8A /* DanmuCell.m in Sources */,
