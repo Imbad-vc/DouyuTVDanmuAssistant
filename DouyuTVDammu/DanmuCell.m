@@ -32,7 +32,7 @@
 - (void)setModel:(DanmuModel *)model{
     _model = model;
     self.label.textContainer = model.textContainer;
-    self.label.backgroundColor = [UIColor clearColor];
+    self.label.backgroundColor = [UIColor colorWithRed:236/255.0 green:237/255.0 blue:241/255.0 alpha:1];;
     
 }
 

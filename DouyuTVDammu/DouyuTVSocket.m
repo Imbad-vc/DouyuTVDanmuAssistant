@@ -46,13 +46,7 @@
 }
 //断开链接
 - (void)onSocketDidDisconnect:(AsyncSocket *)sock{
-    NSLog(@"------断开------");
-    NSLog(@"%@",sock);
-//    if (self.socket.userData == SocketOfflineByServer) {
-//        [self connectSocketHost];
-//    }else if (self.socket.userData == SocketOfflineByUser){
-//        return;
-//    }
+
 }
 
 //发送消息成功之后回调

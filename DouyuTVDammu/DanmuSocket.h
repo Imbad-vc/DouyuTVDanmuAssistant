@@ -12,5 +12,6 @@
 
 @property (nonatomic,assign)BOOL isFirstDate;
 
-
++ (id)sharedInstance;
+- (void)startKLTimer;
 @end

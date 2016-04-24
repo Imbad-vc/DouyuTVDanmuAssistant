@@ -17,14 +17,20 @@
     return [objs lastObject];
 }
 
-- (instancetype)initWithCoder:(NSCoder *)aDecoder{
-    self = [super initWithCoder:aDecoder];
-    if (self) {
-        if ([self.searchTableView respondsToSelector:@selector(setEstimatedRowHeight:)]) {
-            self.searchTableView.estimatedRowHeight = 40;
-        }
+//- (instancetype)initWithCoder:(NSCoder *)aDecoder{
+//    self = [super initWithCoder:aDecoder];
+//    if (self) {
+//        
+//    }
+//    return self;
+//}
+
+- (void)awakeFromNib{
+    [super awakeFromNib];
+    if ([self.searchTableView respondsToSelector:@selector(setEstimatedRowHeight:)]) {
+        self.searchTableView.estimatedRowHeight = 40;
     }
-    return self;
+    self.searchTableView.backgroundColor = [UIColor colorWithRed:236/255.0 green:237/255.0 blue:241/255.0 alpha:1];
 }
 
 #pragma mark ----UITableViewDataSource----

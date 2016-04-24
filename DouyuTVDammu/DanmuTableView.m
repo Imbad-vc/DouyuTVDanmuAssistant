@@ -28,6 +28,8 @@
         if ([self respondsToSelector:@selector(setEstimatedRowHeight:)]) {
             self.estimatedRowHeight = 40;
         }
+        NSTimer *timer = [NSTimer scheduledTimerWithTimeInterval:0.5 target:self selector:@selector(timeToReloadData) userInfo:nil repeats:YES];
+        [timer fire];
         //监听通知
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(receiveNotification:) name:@"kReceiveMessageNotification" object:nil];
     }
@@ -43,7 +45,13 @@
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
     DanmuCell *cell = [tableView dequeueReusableCellWithIdentifier:@"danmuCell" forIndexPath:indexPath];
-    cell.model = self.data[indexPath.row];
+    @try {
+        cell.model = self.data[indexPath.row];
+    }
+    @catch (NSException *exception) {
+        NSLog(@"dataCout:%d,indexPathRow:%d",self.data.count,indexPath.row);
+        cell.model = [self.data lastObject];
+    }
     cell.label.preferredMaxLayoutWidth = CGRectGetWidth(self.frame)-10;
     cell.label.textContainer = [cell.label.textContainer createTextContainerWithTextWidth:CGRectGetWidth(self.frame)-10];
     return cell;
@@ -64,6 +72,7 @@
     CGFloat height = scrollView.frame.size.height;
     CGFloat contentYoffset = scrollView.contentOffset.y;
     CGFloat distanceFromBottom = scrollView.contentSize.height - contentYoffset;
+    
     if (distanceFromBottom < height) {
         self.isNeedScroll = YES;
     }
@@ -71,7 +80,7 @@
 
 -(void)scrollViewWillEndDragging:(UIScrollView *)scrollView withVelocity:(CGPoint)velocity targetContentOffset:(inout CGPoint *)targetContentOffset{
     
-    if (velocity.y < 0 | velocity.y == 0) {
+    if (velocity.y < 0 || velocity.y == 0) {
         self.isNeedScroll = NO;
     }
     
@@ -114,39 +123,33 @@
             [self.dataCache addObjectsFromArray:[self.data subarrayWithRange:NSMakeRange(0, 100)]];
             [self.data removeObjectsInRange:NSMakeRange(0, 100)];
         }
-        
         //将model对象加入到信息model数组里面
         [self.data addObject:model];
         
-        dispatch_async(dispatch_get_main_queue(), ^{
-            
-            //刷新数据，更新界面
+        if (self.isNeedScroll && self.isRightTime) {
+            //将最后一个单元格滚动到表视图的底部显示
             [self reloadData];
-
-            //是否需要滑动到最后
-            if (self.isNeedScroll == YES) {
-                //将最后一个单元格滚动到表视图的底部显示
-                [self scrollToBtn];
-
-            }else{
-            }
-        });
-        
-        
+            NSIndexPath *indexPath = [NSIndexPath indexPathForRow:self.data.count-1 inSection:0];
+            [self scrollToRowAtIndexPath:indexPath atScrollPosition:UITableViewScrollPositionBottom animated:NO];
+            self.isRightTime = NO;
+            
+        }
     }
     
 }
 
-- (void)scrollToBtn{
-    NSIndexPath *indexPath = [NSIndexPath indexPathForRow:self.data.count-1 inSection:0];
-    [self scrollToRowAtIndexPath:indexPath atScrollPosition:UITableViewScrollPositionBottom animated:NO];
-    self.isNeedScroll = YES;
+- (void)timeToReloadData{
+    
+    self.isRightTime = YES;
+    
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
     DanmuModel *model = self.data[indexPath.row];
     NSLog(@"%@",model.dataString);
 }
+
+
 /*
 // Only override drawRect: if you perform custom drawing.
 // An empty implementation adversely affects performance during animation.

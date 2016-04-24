@@ -121,7 +121,7 @@
     _authSocket = [AuthSocket sharedInstance];
     _authSocket.room = self.roomID;
     [_authSocket connectSocketHost];
-    _danmuSocket = [DanmuSocket new];
+    _danmuSocket = [DanmuSocket sharedInstance];
     _danmuSocket.room = _authSocket.room;
     //weak处理防止block循环
     __weak DanmuSocket *danmuSocket = _danmuSocket;

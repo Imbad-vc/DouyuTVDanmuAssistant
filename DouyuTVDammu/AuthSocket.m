@@ -81,11 +81,8 @@ static AuthSocket *instance = nil;
 - (void)onSocket:(AsyncSocket *)sock didReadData:(NSData *)data withTag:(long)tag{
     if (data.length != 0) {
         
-        NSString *string = [NSString hexDateToString:data];
-        [SocketData douyuData:data];
-        //提取两个ID
-        
-        
+        [SocketData douyuData:data isAuthData:YES];
+ 
     }
     
     [self.socket readDataWithTimeout:kReadTimeOut buffer:nil bufferOffset:0 maxLength:kMaxBuffer tag:0];
@@ -93,5 +90,9 @@ static AuthSocket *instance = nil;
 }
 
 
+//断开链接
+- (void)onSocketDidDisconnect:(AsyncSocket *)sock{
+    NSLog(@"---认证服务器断开---");
+}
 
 @end

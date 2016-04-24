@@ -7,10 +7,26 @@
 //
 
 #import "DanmuSocket.h"
+#import "SocketData.h"
 
+static DanmuSocket *instance = nil;
+@interface DanmuSocket ()
+
+@property (nonatomic,strong)NSMutableData *combieData;
+
+@end
 
 @implementation DanmuSocket
 
++ (id)sharedInstance{
+    @synchronized(self) {
+        if (instance == nil) {
+            
+            instance = [[DanmuSocket alloc]init];
+        }
+    }
+    return instance;
+}
 
 - (void)setServerConfig{
     NSString *ip = @"danmu.douyutv.com";
@@ -76,36 +92,38 @@
 }
 //断开链接
 - (void)onSocketDidDisconnect:(AsyncSocket *)sock{
-    NSLog(@"------断开------");
-    NSLog(@"%@",sock);
+    NSLog(@"----弹幕服务器断开----");
 
 }
 
 
 //接受数据
 - (void)onSocket:(AsyncSocket *)sock didReadData:(NSData *)data withTag:(long)tag{
-
     if (data.length != 0){
-        //首次返回的数据无用，所以做一个记录
-        if (self.isFirstDate == YES) {
-            
-            NSString *jionGroup = [NSString stringWithFormat:@"type@=joingroup/rid@=%@/gid@=%@/",self.room,self.groupID];
-            NSData *jGroupData = [self packToData:jionGroup];
-            [self.socket writeData:jGroupData withTimeout:30 tag:1];
-            //开始发送心跳包
-            self.connectTimer = [NSTimer scheduledTimerWithTimeInterval:30 target:self selector:@selector(longConnectToSocket) userInfo:nil repeats:YES];
-            [self.connectTimer fire];
-        }else{
-            NSString *string = [NSString hexDateToString:data];
-            if (string.length != 0) {
-                
-                [[NSNotificationCenter defaultCenter]postNotificationName:@"kReceiveMessageNotification" object:string];
-            }
+        NSInteger endCode;
+        //获取data末尾字符
+        [data getBytes:&endCode range:NSMakeRange(data.length-1, 1)];
+        if (self.combieData == nil) {
+            self.combieData = [[NSMutableData alloc]init];
         }
-        _isFirstDate = NO;
+        //如果为0则代表这是一段完整的数据，可以进行解析
+        //若无，则需要拼接至一段完整数据才进行解析
+        if (endCode == 0) {
+            [self.combieData appendData:data];
+            [SocketData douyuData:self.combieData isAuthData:NO];
+            self.combieData = nil;
+        }else{
+            [self.combieData appendData:data];
+        }
     }
     [self.socket readDataWithTimeout:kReadTimeOut buffer:nil bufferOffset:0 maxLength:kMaxBuffer tag:0];
 }
+
+- (void)startKLTimer{
+    self.connectTimer = [NSTimer scheduledTimerWithTimeInterval:30 target:self selector:@selector(longConnectToSocket) userInfo:nil repeats:YES];
+    [self.connectTimer fire];
+}
+
 
 
 @end

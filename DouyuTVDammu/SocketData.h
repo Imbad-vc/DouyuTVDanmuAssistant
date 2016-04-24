@@ -10,6 +10,6 @@
 
 @interface SocketData : NSObject
 
-+ (void)douyuData:(NSData *)data;
++ (void)douyuData:(NSData *)data isAuthData:(BOOL)yesOrNo;
 
 @end

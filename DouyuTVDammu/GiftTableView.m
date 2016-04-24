@@ -34,19 +34,22 @@
         }
         //将model对象加入到信息model数组里面
         [self.data addObject:model];
-        dispatch_async(dispatch_get_main_queue(), ^{
-            
-            //刷新数据，更新界面
+        
+        if (self.isNeedScroll && self.isRightTime) {
+            //将最后一个单元格滚动到表视图的底部显示
             [self reloadData];
-            //是否需要滑动到最后
-            if (self.isNeedScroll == YES) {
-                //将最后一个单元格滚动到表视图的底部显示
-                NSIndexPath *indexPath = [NSIndexPath indexPathForRow:self.data.count-1 inSection:0];
-                [self scrollToRowAtIndexPath:indexPath atScrollPosition:UITableViewScrollPositionBottom animated:NO];
-                
-            }
-        });
+            NSIndexPath *indexPath = [NSIndexPath indexPathForRow:self.data.count-1 inSection:0];
+            [self scrollToRowAtIndexPath:indexPath atScrollPosition:UITableViewScrollPositionBottom animated:NO];
+            self.isRightTime = NO;
+            
+        }
     }
+    
+}
+
+- (void)timeToReloadData{
+    
+    self.isRightTime = YES;
     
 }
 /*

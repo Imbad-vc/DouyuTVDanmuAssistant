@@ -8,44 +8,67 @@
 
 #import "SocketData.h"
 #import "AuthSocket.h"
-@interface SocketData ()
+#import "DanmuSocket.h"
 
-@property (nonatomic,assign)NSInteger loction;
-@property (nonatomic,assign)NSInteger length;
-
-@end
 
 @implementation SocketData
 
 
-+ (void)douyuData:(NSData *)data{
-    SocketData *socketData = [SocketData new];
++ (void)douyuData:(NSData *)data isAuthData:(BOOL)yesOrNo{
     NSMutableArray *contents = @[].mutableCopy;
     NSData *subData = data.copy;
-    socketData.loction = 0;
+    NSInteger _loction = 0;
+    NSInteger _length;
     do {
         
-        socketData.loction += 12;
+        _loction += 12;
         //获取数据长度
-        [subData getBytes:&socketData->_length range:NSMakeRange(0, 4)];
-        socketData.length -= 8;
+        [subData getBytes:&_length range:NSMakeRange(0, 4)];
+        _length -= 8;
         //截取相对应的数据
-        NSData *contentData = [subData subdataWithRange:NSMakeRange(12, socketData.length)];
-
+        NSData *contentData = [subData subdataWithRange:NSMakeRange(12, _length)];
         NSString *content = [[NSString alloc]initWithData:contentData encoding:NSUTF8StringEncoding];
         //截取余下的数据
-        subData = [data subdataWithRange:NSMakeRange(socketData.length+socketData.loction, data.length-socketData.length-socketData.loction)];
+        subData = [data subdataWithRange:NSMakeRange(_length+_loction, data.length-_length-_loction)];
         
         [contents addObject:content];
         
-        socketData.loction += socketData.length;
-
-    } while (socketData.loction < data.length);
+        _loction += _length;
+        
+    } while (_loction < data.length);
+    if (yesOrNo) {
+        [self readAuthMsg:contents];
+    }else{
+        [self readDanmuMsg:contents];
+    }
     
     
+}
++ (void)readDanmuMsg:(NSArray *)array{
+    DanmuSocket *danmuSocket = [DanmuSocket sharedInstance];
+    if (array.count == 1){
+        NSString *string = [array firstObject];
+        if ([string rangeOfString:@"type@=login"].location != NSNotFound) {
+            //加入弹幕组
+            NSString *jionGroup = [NSString stringWithFormat:@"type@=joingroup/rid@=%@/gid@=%@/",danmuSocket.room,danmuSocket.groupID];
+            NSData *jGroupData = [danmuSocket packToData:jionGroup];
+            [danmuSocket.socket writeData:jGroupData withTimeout:30 tag:1];
+            //开始发送心跳包
+            [danmuSocket startKLTimer];
+        }else{
+            [[NSNotificationCenter defaultCenter]postNotificationName:@"kReceiveMessageNotification" object:string];
+        }
+    }else{
+        for (NSString * msg in array) {
+            [[NSNotificationCenter defaultCenter]postNotificationName:@"kReceiveMessageNotification" object:msg];
+        }
+    }
+    
+}
++ (void)readAuthMsg:(NSArray *)array{
     AuthSocket *authSocket = [AuthSocket sharedInstance];
     //遍历数组，提取ID
-    for (NSString *msg in contents) {
+    for (NSString *msg in array) {
         
         if ([msg rangeOfString:@"login"].location != NSNotFound) {
             NSRange range = [msg rangeOfString:@"username@="];
@@ -63,7 +86,7 @@
         
         authSocket.InfoBlock(authSocket.vistorID,authSocket.groupID);
     }
-    
+    [authSocket cutOffSocket];
 }
 
 @end

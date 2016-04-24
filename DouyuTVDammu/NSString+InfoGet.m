@@ -95,21 +95,9 @@ static inline char itoh(int i) {
 
    
     NSString *hexString;
-    //判断包中内容是否含有弹幕组的信息
-    NSRange range = [upperString rangeOfString:@"74797065403D7365746D736767726F7570"];
 
-    if (range.location != NSNotFound) {
-        NSString *unSubstring = [upperString substringFromIndex:range.location];
-        NSRange grpIDRange= [unSubstring rangeOfString:@"00"];
-        hexString = [unSubstring substringToIndex:grpIDRange.location];
-        
-    }else{
-        if (upperString.length <= 24){
-            return nil;
-        }
-        NSString *subString = [upperString substringFromIndex:24];
-        hexString = [subString substringToIndex:subString.length-2];
-    }
+    NSString *subString = [upperString substringFromIndex:24];
+    hexString = [subString substringToIndex:subString.length-2];
     //将16位字符串转换unicode的字符
     char *myBuffer = (char *)malloc((int)[hexString length] / 2 + 1);
     bzero(myBuffer, [hexString length] / 2 + 1);
