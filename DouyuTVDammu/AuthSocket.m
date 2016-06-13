@@ -79,7 +79,7 @@ static AuthSocket *instance = nil;
 //接受数据
 - (void)onSocket:(AsyncSocket *)sock didReadData:(NSData *)data withTag:(long)tag{
     if (data.length != 0){
-        NSInteger endCode;
+        NSInteger endCode = 0;
         //获取data末尾字节
         [data getBytes:&endCode range:NSMakeRange(data.length-1, 1)];
         if (self.combieData == nil) {

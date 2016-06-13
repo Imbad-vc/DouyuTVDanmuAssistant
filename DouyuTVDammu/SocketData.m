@@ -18,7 +18,7 @@
     NSMutableArray *contents = @[].mutableCopy;
     NSData *subData = data.copy;
     NSInteger _loction = 0;
-    NSInteger _length;
+    NSInteger _length = 0;
     do {
         
         _loction += 12;
@@ -74,7 +74,8 @@
             NSRange range = [msg rangeOfString:@"username@="];
             NSString *unSubString = [msg substringFromIndex:range.location + range.length];
             authSocket.vistorID = [unSubString substringToIndex:[unSubString rangeOfString:@"/"].location];
-        }else if ([msg rangeOfString:@"gid"].location != NSNotFound) {
+        }
+        if ([msg rangeOfString:@"gid"].location != NSNotFound) {
             NSRange range = [msg rangeOfString:@"gid@="];
             NSString *unSubSring = [msg substringFromIndex:range.location + range.length];
             authSocket.groupID = [unSubSring substringToIndex:[unSubSring rangeOfString:@"/"].location];
@@ -85,8 +86,8 @@
         NSLog(@"---获得游客ID以及弹幕组---");
         
         authSocket.InfoBlock(authSocket.vistorID,authSocket.groupID);
+        [authSocket cutOffSocket];
     }
-    [authSocket cutOffSocket];
 }
 
 @end
