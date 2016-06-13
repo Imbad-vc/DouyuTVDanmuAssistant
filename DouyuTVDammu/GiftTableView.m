@@ -31,6 +31,7 @@
         
         if (self.data.count > 200) {
             [self.data removeObjectsInRange:NSMakeRange(0, 100)];
+
         }
         //将model对象加入到信息model数组里面
         [self.data addObject:model];

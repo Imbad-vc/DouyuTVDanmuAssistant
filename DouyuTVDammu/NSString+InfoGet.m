@@ -72,45 +72,4 @@ static inline char itoh(int i) {
     return commandToSend;
 }
 
-+ (NSString *)hexDateToString:(NSData *)data{
-    //将data转换成16位的字符串
-    NSUInteger i, len;
-    unsigned char *buf, *bytes;
-    
-    len = data.length;
-    bytes = (unsigned char*)data.bytes;
-    buf = malloc(len*2);
-    
-    for (i=0; i<len; i++) {
-        buf[i*2] = itoh((bytes[i] >> 4) & 0xF);
-        buf[i*2+1] = itoh(bytes[i] & 0xF);
-    }
-    
-    NSString *upperString = [[NSString alloc] initWithBytesNoCopy:buf
-                                                         length:len*2
-                                                       encoding:NSASCIIStringEncoding
-                                                   freeWhenDone:YES];
-    
-    
-
-   
-    NSString *hexString;
-
-    NSString *subString = [upperString substringFromIndex:24];
-    hexString = [subString substringToIndex:subString.length-2];
-    //将16位字符串转换unicode的字符
-    char *myBuffer = (char *)malloc((int)[hexString length] / 2 + 1);
-    bzero(myBuffer, [hexString length] / 2 + 1);
-    for (int i = 0; i < [hexString length] - 1; i += 2) {
-        unsigned int anInt;
-        NSString * hexCharStr = [hexString substringWithRange:NSMakeRange(i, 2)];
-        NSScanner * scanner = [[NSScanner alloc] initWithString:hexCharStr];
-        [scanner scanHexInt:&anInt];
-        myBuffer[i / 2] = (char)anInt;
-    }
-    NSString *unicodeString = [NSString stringWithCString:myBuffer encoding:4];
-    return unicodeString;
-    
-}
-
 @end

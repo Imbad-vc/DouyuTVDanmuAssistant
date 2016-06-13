@@ -14,5 +14,5 @@
 + (NSString *)uuid;//获取随机UUID
 + (NSString *)timeString;//获取时间戳（秒）
 - (NSMutableData *)stringToHexData;//转换16位的data
-+ (NSString *)hexDateToString:(NSData *)data;//将16进制的data转换为字符串
+
 @end

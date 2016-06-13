@@ -10,6 +10,7 @@
 #import "AsyncSocket.h"
 #import "ServerModel.h"
 #import "NSString+InfoGet.h"
+#import "SocketData.h"
 
 /*
   向斗鱼发送的消息
@@ -37,13 +38,13 @@ static const unsigned int kEnd = 0;
 
 @interface DouyuTVSocket : NSObject<AsyncSocketDelegate>
 
-
 @property (nonatomic,strong)AsyncSocket *socket;//Socket对象
 @property (nonatomic,strong) NSMutableArray *server;//服务器数组
 @property (nonatomic,copy)NSString *room;//房间ID
 @property (nonatomic,copy)NSString *vistorID;//游客ID
 @property (nonatomic,copy)NSString *groupID;//弹幕组ID
 @property (nonatomic,strong)NSTimer *connectTimer;//心跳keep live
+@property (nonatomic,strong)NSMutableData *combieData;
 
 - (void)setServerConfig;
 - (void)connectSocketHost;

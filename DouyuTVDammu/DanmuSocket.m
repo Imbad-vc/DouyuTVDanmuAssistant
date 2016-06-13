@@ -7,15 +7,8 @@
 //
 
 #import "DanmuSocket.h"
-#import "SocketData.h"
 
 static DanmuSocket *instance = nil;
-@interface DanmuSocket ()
-
-@property (nonatomic,strong)NSMutableData *combieData;
-
-@end
-
 @implementation DanmuSocket
 
 + (id)sharedInstance{
@@ -97,27 +90,9 @@ static DanmuSocket *instance = nil;
 }
 
 
-//接受数据
-- (void)onSocket:(AsyncSocket *)sock didReadData:(NSData *)data withTag:(long)tag{
-    if (data.length != 0){
-        NSInteger endCode;
-        //获取data末尾字符
-        [data getBytes:&endCode range:NSMakeRange(data.length-1, 1)];
-        if (self.combieData == nil) {
-            self.combieData = [[NSMutableData alloc]init];
-        }
-        //如果为0则代表这是一段完整的数据，可以进行解析
-        //若无，则需要拼接至一段完整数据才进行解析
-        if (endCode == 0) {
-            [self.combieData appendData:data];
-            [SocketData douyuData:self.combieData isAuthData:NO];
-            self.combieData = nil;
-        }else{
-            [self.combieData appendData:data];
-        }
-    }
-    [self.socket readDataWithTimeout:kReadTimeOut buffer:nil bufferOffset:0 maxLength:kMaxBuffer tag:0];
-}
+//接受数据 从父类继承
+//- (void)onSocket:(AsyncSocket *)sock didReadData:(NSData *)data withTag:(long)tag{
+//}
 
 - (void)startKLTimer{
     self.connectTimer = [NSTimer scheduledTimerWithTimeInterval:30 target:self selector:@selector(longConnectToSocket) userInfo:nil repeats:YES];
